@@ -1,0 +1,24 @@
+{
+  // One Worker serves the built PWA (static assets) and the /api backend on the same origin.
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "wayfare",
+  "main": "worker/index.ts",
+  "compatibility_date": "2026-10-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "assets": {
+    "directory": "./dist",
+    "not_found_handling": "single-page-application",
+    "run_worker_first": ["/api/*"]
+  },
+  "d1_databases": [
+    // Create with: npx wrangler d1 create wayfare  — then paste the database_id here.
+    { "binding": "DB", "database_name": "wayfare", "database_id": "REPLACE_WITH_D1_DATABASE_ID" }
+  ],
+  "triggers": { "crons": ["*/5 * * * *"] },
+  "vars": {
+    // Comma-separated Google account emails allowed to use the API. Leave empty to allow any signed-in user.
+    "ALLOWED_EMAILS": "",
+    "VAPID_SUBJECT": "mailto:you@example.com"
+  }
+  // Secrets (set with `npx wrangler secret put NAME`): ANTHROPIC_API_KEY, VAPID_PRIVATE_JWK, VAPID_PUBLIC_KEY
+}
