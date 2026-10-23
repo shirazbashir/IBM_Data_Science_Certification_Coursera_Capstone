@@ -12,7 +12,36 @@ Until you finish, the app runs on the built-in sample trips, so you can try the 
 
 ---
 
-## 1. Deploy to Cloudflare
+## Option A: deploy from your browser (nothing to install)
+
+You can do all of this on a desktop or laptop browser. You'll only need your iPhone at the end.
+
+1. **Create a Cloudflare account** at <https://dash.cloudflare.com/sign-up>. The free plan is enough.
+2. **Create the database.** Go to **Storage & Databases → D1 SQL Database → Create**.
+   - Name it `wayfare` and create it.
+   - Open its **Console** tab, paste the whole contents of [`worker/schema.sql`](../worker/schema.sql), and click **Execute**.
+   - Copy the **Database ID** shown on the database's page.
+3. **Put the database ID into the code.** On GitHub, open `trip-itinerary-app/wrangler.jsonc` on the `claude/trip-itinerary-iphone-app-htceqr` branch.
+   - Click the pencil icon to edit.
+   - Replace `REPLACE_WITH_D1_DATABASE_ID` with the ID you copied.
+   - Set `ALLOWED_EMAILS` to your Gmail address.
+   - Click **Commit changes**.
+4. **Connect the repository.** In Cloudflare, go to **Compute (Workers) → Create → Import a repository**.
+   - Pick your GitHub repo and branch `claude/trip-itinerary-iphone-app-htceqr`.
+   - **Root directory:** `trip-itinerary-app`
+   - **Build command:** `npm run build`
+   - **Deploy command:** `npx wrangler deploy`
+   - Click **Deploy**. When it finishes, copy your app's address (`https://wayfare.<something>.workers.dev`).
+5. **Add your keys.** Open the Worker's **Settings → Variables and Secrets**, add each of the following, and save:
+   - `ANTHROPIC_API_KEY` as a **Secret**. Create the key at <https://console.anthropic.com> → API Keys.
+   - `GOOGLE_CLIENT_ID` as **Text**. You'll get it in step 2 of this guide.
+6. **Optional: push reminders.** These need VAPID keys, which have to be generated from a terminal (`npm run vapid`). You can skip them, because **Add to Calendar** gives you alerts without them.
+
+If the build fails, you can also deploy from your own computer with Option B.
+
+## Option B: deploy from a terminal
+
+### 1. Deploy to Cloudflare
 
 ```bash
 cd trip-itinerary-app

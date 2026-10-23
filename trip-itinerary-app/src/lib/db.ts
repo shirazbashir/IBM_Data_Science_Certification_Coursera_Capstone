@@ -1,5 +1,7 @@
 // Tiny IndexedDB key/value layer. Everything the app shows is kept here so it works offline.
 
+import { demoResponse } from '../demo';
+
 const DB_NAME = 'wayfare';
 const STORES = ['trips', 'cache', 'kv'] as const;
 type StoreName = (typeof STORES)[number];
@@ -60,6 +62,7 @@ export async function cached<T>(key: string, ttlMs: number, load: () => Promise<
 }
 
 export async function fetchJson<T>(url: string, init?: RequestInit): Promise<T> {
+  if (import.meta.env.VITE_DEMO) return demoResponse(url, init) as T;
   const res = await fetch(url, init);
   if (!res.ok) throw new Error(`${res.status} ${res.statusText} for ${url}`);
   return (await res.json()) as T;
