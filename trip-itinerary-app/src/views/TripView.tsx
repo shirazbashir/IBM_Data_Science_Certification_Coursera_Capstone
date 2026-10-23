@@ -6,7 +6,7 @@ import { SunLine, WeatherPill } from '../components/Weather';
 import { useCover, useTripDays, type DayInfo } from '../hooks';
 import { goBack, navigate, type TripTab } from '../router';
 import { useAppState } from '../state';
-import { daysBetween, formatDateLong, formatDuration, formatLocalTime, formatRange, relativeDays, todayLocal } from '../lib/time';
+import { daysBetween, formatDateLong, formatDateMedium, formatDuration, formatLocalTime, formatRange, relativeDays, todayLocal } from '../lib/time';
 import { isTransport, itemDurationMs, leaveBy, timeline, tripTravelers, type TimelineEntry } from '../lib/trips';
 import { ExploreTab } from './ExploreTab';
 import { InfoTab } from './InfoTab';
@@ -130,7 +130,7 @@ export function Itinerary(props: { trip: Trip; days: Map<string, DayInfo>; setti
               <div>
                 <h2 id={`day-${day.date}`}>
                   {isToday ? 'Today · ' : ''}
-                  {formatDateLong(day.date)}
+                  {formatDateMedium(day.date)}
                 </h2>
                 <div class="row wrap" style={{ gap: '0.5rem' }}>
                   <span class="day-sub">
@@ -198,7 +198,7 @@ function Entry({ entry, trip, settings, readOnly }: { entry: TimelineEntry; trip
   const duration = itemDurationMs(item);
   const lb = role === 'single' ? leaveBy(item, settings) : undefined;
   const nights = item.kind === 'hotel' && item.end ? daysBetween(item.start.slice(0, 10), item.end.slice(0, 10)) : 0;
-  const where = item.location?.address ?? item.location?.name;
+  const where = item.location?.address ?? (item.location?.name !== item.title ? item.location?.name : undefined);
 
   const body = (
     <>

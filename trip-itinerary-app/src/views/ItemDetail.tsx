@@ -262,7 +262,7 @@ function Facts({ item, settings, nights }: { item: Item; settings: Settings; nig
   return (
     <div class="facts" style={{ marginTop: '0.25rem' }}>
       {facts.map(([label, val, copy]) => (
-        <div key={label} class="fact">
+        <div key={label} class={copy ? 'fact wide' : 'fact'}>
           <div class="label">{label}</div>
           <div class="row" style={{ justifyContent: 'space-between' }}>
             <div class="val" style={copy ? { fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace' } : undefined}>

@@ -54,6 +54,9 @@ export function useAppState<T>(select: (s: AppState) => T): T {
   useEffect(() => {
     const l = () => force((n) => n + 1);
     listeners.add(l);
+    // State may have changed between render and this effect (e.g. data loaded instantly from
+    // IndexedDB); re-render once so that update isn't missed.
+    l();
     return () => void listeners.delete(l);
   }, []);
   return select(state);

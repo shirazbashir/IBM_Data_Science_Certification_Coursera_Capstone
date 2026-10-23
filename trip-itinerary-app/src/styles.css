@@ -51,8 +51,8 @@
     --label: #ffffff;
     --label-2: rgba(235, 235, 245, 0.78);
     --label-3: rgba(235, 235, 245, 0.6);
-    --tint: #3a9bff;
-    --tint-fill: rgba(58, 155, 255, 0.18);
+    --tint: #64b2ff;
+    --tint-fill: rgba(100, 178, 255, 0.16);
     --on-tint: #000000;
     --danger: #ff6961;
     --success: #4cd964;
@@ -103,6 +103,9 @@ img { max-width: 100%; display: block; }
   outline-offset: 2px;
   border-radius: 6px;
 }
+
+/* Headings receive focus programmatically on navigation (for screen readers); no ring needed. */
+[tabindex='-1']:focus { outline: none; }
 
 .sr-only {
   position: absolute !important;
@@ -213,7 +216,7 @@ button.list-row:active, a.list-row:active { background: var(--fill); }
   padding: 0.35rem 0.75rem; min-height: 2.2rem; border-radius: 999px;
   background: var(--fill); border: 0; color: var(--label); font-size: 0.88rem; cursor: pointer;
 }
-.chip[aria-pressed='true'] { background: var(--tint); color: var(--on-tint); }
+.chip[aria-pressed='true'], .chip[aria-checked='true'] { background: var(--tint); color: var(--on-tint); }
 .chips { display: flex; gap: 0.5rem; overflow-x: auto; padding-bottom: 0.25rem; scrollbar-width: none; }
 .chips::-webkit-scrollbar { display: none; }
 
@@ -227,7 +230,7 @@ button.list-row:active, a.list-row:active { background: var(--fill); }
   min-height: 2.25rem; border: 0; border-radius: 0.55rem; background: transparent;
   font-weight: 600; font-size: 0.9rem; color: var(--label); cursor: pointer;
 }
-.segmented button[aria-selected='true'] { background: var(--bg-elevated); box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12); }
+.segmented button[aria-selected='true'], .segmented button[aria-checked='true'] { background: var(--bg-elevated); box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12); }
 
 .sticky-tabs {
   position: sticky; top: 0; z-index: 20;
@@ -249,7 +252,7 @@ button.list-row:active, a.list-row:active { background: var(--fill); }
 .tabbar a {
   display: grid; justify-items: center; gap: 0.1rem;
   min-height: 2.9rem; padding-top: 0.2rem;
-  font-size: 0.68rem; font-weight: 600; text-decoration: none; color: var(--label-3);
+  font-size: 0.68rem; font-weight: 600; text-decoration: none; color: var(--label-2);
 }
 .tabbar a[aria-current='page'] { color: var(--tint); }
 
@@ -395,7 +398,8 @@ button.list-row:active, a.list-row:active { background: var(--fill); }
 .facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(7.5rem, 1fr)); gap: 0.6rem; }
 .fact { background: var(--card-solid); border-radius: var(--radius-sm); padding: 0.7rem 0.85rem; }
 .fact .label { font-size: 0.72rem; font-weight: 700; color: var(--label-2); text-transform: uppercase; letter-spacing: 0.04em; }
-.fact .val { font-size: 1.15rem; font-weight: 700; margin-top: 0.1rem; word-break: break-word; }
+.fact .val { font-size: 1.15rem; font-weight: 700; margin-top: 0.1rem; overflow-wrap: anywhere; }
+.fact.wide { grid-column: 1 / -1; }
 
 .callout {
   display: flex; gap: 0.8rem; align-items: flex-start; padding: 0.9rem 1rem; border-radius: var(--radius);
@@ -411,7 +415,7 @@ button.list-row:active, a.list-row:active { background: var(--fill); }
 .wx-temps { display: flex; gap: 1.1rem; }
 .wx-temps .t { font-size: 1.5rem; font-weight: 800; }
 .wx-temps .l { font-size: 0.72rem; font-weight: 700; color: var(--label-2); text-transform: uppercase; letter-spacing: 0.04em; }
-.wx-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(6.5rem, 1fr)); gap: 0.5rem; }
+.wx-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(5.4rem, 1fr)); gap: 0.5rem; }
 .wx-stat { background: var(--fill); border-radius: 0.7rem; padding: 0.5rem 0.65rem; }
 .wx-stat .l { font-size: 0.7rem; font-weight: 700; color: var(--label-2); text-transform: uppercase; letter-spacing: 0.03em; }
 .wx-stat .v { font-weight: 700; }
@@ -504,3 +508,6 @@ legend { font-weight: 700; margin-bottom: 0.5rem; }
 @media (min-width: 48rem) {
   .trip-header, .detail-hero { border-radius: 0 0 1.75rem 1.75rem; }
 }
+
+/* Icons never shrink inside flexible rows. */
+.banner > svg, .list-row > svg, .callout > svg, .staying > svg, .free-day > svg { flex: none; }

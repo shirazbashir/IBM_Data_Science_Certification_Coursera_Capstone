@@ -52,7 +52,7 @@ export function SettingsView() {
             <span class="spacer" />
             <div class="segmented" role="radiogroup" aria-labelledby="units-label" style={{ minWidth: '9rem' }}>
               {(['imperial', 'metric'] as const).map((u) => (
-                <button key={u} role="radio" aria-checked={settings.units === u} aria-selected={settings.units === u} onClick={() => updateSettings({ units: u })}>
+                <button key={u} role="radio" aria-checked={settings.units === u} onClick={() => updateSettings({ units: u })}>
                   {u === 'imperial' ? '°F · mph' : '°C · km/h'}
                 </button>
               ))}

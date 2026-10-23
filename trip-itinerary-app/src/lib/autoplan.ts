@@ -22,11 +22,22 @@ export function sightToItem(s: Sight, date: string, time: string, tz: string, ci
   };
 }
 
+const norm = (s: string) => s.toLowerCase().replace(/[^\p{L}\p{N}]+/gu, ' ').trim();
+
+/** True if the trip already has this sight, even under a longer ticket name ("Tower of London & Crown Jewels"). */
+export function alreadyPlanned(trip: Trip, sightName: string): boolean {
+  const n = norm(sightName);
+  return trip.items.some((i) => {
+    const t = norm(i.title);
+    const loc = norm(i.location?.name ?? '');
+    return t === n || loc === n || (n.length >= 6 && (t.includes(n) || loc.includes(n)));
+  });
+}
+
 const PLANNED = new Set<Item['kind']>(['activity', 'sight', 'restaurant']);
 
 export function autoPlan(trip: Trip, city: string, sights: Sight[], tz: string, dates: string[]): Item[] {
-  const taken = new Set(trip.items.map((i) => i.title.toLowerCase()));
-  const pool = sights.filter((s) => !taken.has(s.name.toLowerCase()));
+  const pool = sights.filter((s) => !alreadyPlanned(trip, s.name));
   const out: Item[] = [];
   const live = trip.items.filter((i) => i.status !== 'cancelled');
 

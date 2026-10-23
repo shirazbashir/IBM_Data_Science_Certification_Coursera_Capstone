@@ -1,4 +1,5 @@
-// Renders public/icon.svg to the PNG sizes iOS and the manifest need (uses the preinstalled Chromium).
+// Renders public/icon.svg to the PNG sizes iOS and the manifest need.
+// Requires Playwright (`npx -y playwright install chromium` once), then: node scripts/make-icons.mjs
 import { chromium } from 'playwright';
 import { readFile } from 'node:fs/promises';
 const svg = await readFile(new URL('../public/icon.svg', import.meta.url), 'utf8');

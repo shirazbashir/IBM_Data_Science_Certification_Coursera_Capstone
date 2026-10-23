@@ -16,6 +16,8 @@
   ],
   "triggers": { "crons": ["*/5 * * * *"] },
   "vars": {
+    // OAuth client ID from Google Cloud (public, not a secret). See docs/SETUP.md.
+    "GOOGLE_CLIENT_ID": "",
     // Comma-separated Google account emails allowed to use the API. Leave empty to allow any signed-in user.
     "ALLOWED_EMAILS": "",
     "VAPID_SUBJECT": "mailto:you@example.com"

@@ -100,7 +100,7 @@ export function ItemEdit({ tripId, itemId, date }: { tripId: string; itemId?: st
           <legend>Type</legend>
           <div class="chips" role="radiogroup" aria-label="Plan type" style={{ flexWrap: 'wrap' }}>
             {KINDS.map((k) => (
-              <button key={k} type="button" class="chip" role="radio" aria-checked={item.kind === k} aria-pressed={item.kind === k} onClick={() => set({ kind: k })}>
+              <button key={k} type="button" class="chip" role="radio" aria-checked={item.kind === k} onClick={() => set({ kind: k })}>
                 <Icon name={KIND_META[k].icon} size={16} /> {KIND_META[k].label}
               </button>
             ))}

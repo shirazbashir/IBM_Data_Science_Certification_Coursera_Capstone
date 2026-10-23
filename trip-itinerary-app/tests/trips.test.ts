@@ -124,6 +124,11 @@ describe('auto-plan', () => {
     expect(byDay).toEqual({ '2026-11-03': 1, '2026-11-04': 2, '2026-11-05': 2 });
     expect(added[0].title).toBe('Sight 1');
   });
+  it('skips sights already booked under a longer name', () => {
+    const [trip] = mergeItems([], [hotel(), { ...hotel(), id: 'a', kind: 'activity', title: 'Tower of London & Crown Jewels', start: '2026-11-04T10:00', confirmation: 'T1' }]);
+    const s = { ...sight(1), name: 'Tower of London' };
+    expect(autoPlan(trip, 'London', [s], 'Europe/London', ['2026-11-04']).length).toBe(0);
+  });
 });
 
 describe('sample data', () => {

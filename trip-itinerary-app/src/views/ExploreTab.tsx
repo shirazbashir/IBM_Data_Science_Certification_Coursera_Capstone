@@ -2,7 +2,7 @@ import { useMemo, useState } from 'preact/hooks';
 import type { Settings, Trip } from '../types';
 import { Icon } from '../components/Icon';
 import { Empty, useAsync } from '../components/ui';
-import { autoPlan, sightToItem } from '../lib/autoplan';
+import { alreadyPlanned, autoPlan, sightToItem } from '../lib/autoplan';
 import { formatDistance, geocodeCity, locate } from '../lib/geo';
 import { mapUrl } from '../lib/maps';
 import { nearbySights, type Sight } from '../lib/places';
@@ -39,7 +39,6 @@ export function ExploreTab({ trip, settings }: { trip: Trip; settings: Settings 
     );
   }
 
-  const inTrip = new Set(trip.items.map((i) => i.title.toLowerCase()));
 
   const runAutoPlan = async () => {
     const list = sights.data?.list ?? [];
@@ -89,7 +88,7 @@ export function ExploreTab({ trip, settings }: { trip: Trip; settings: Settings 
       {sights.data && (
         <ul class="sight-grid" style={{ listStyle: 'none', margin: 0, padding: 0 }}>
           {sights.data.list.slice(0, 24).map((s) => (
-            <SightCard key={s.id} sight={s} added={inTrip.has(s.name.toLowerCase())} dates={dates} settings={settings} onAdd={(date) => upsertItem(trip.id, sightToItem(s, date, '10:00', tz, city.city, 'manual'))} />
+            <SightCard key={s.id} sight={s} added={alreadyPlanned(trip, s.name)} dates={dates} settings={settings} onAdd={(date) => upsertItem(trip.id, sightToItem(s, date, '10:00', tz, city.city, 'manual'))} />
           ))}
         </ul>
       )}

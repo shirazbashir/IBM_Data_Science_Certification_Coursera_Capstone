@@ -134,7 +134,13 @@ export function formatDateShort(date: string): string {
   return `${WEEKDAY[weekdayIndex(date)]}, ${MONTH[mo - 1]} ${d}`;
 }
 
-/** "Monday, November 2" — used for screen-reader labels and day headers. */
+/** "Monday, Nov 2" — compact day heading. */
+export function formatDateMedium(date: string): string {
+  const { mo, d } = parseLocal(date);
+  return `${WEEKDAY_LONG[weekdayIndex(date)]}, ${MONTH[mo - 1]} ${d}`;
+}
+
+/** "Monday, November 2" — used for screen-reader labels. */
 export function formatDateLong(date: string): string {
   const { mo, d } = parseLocal(date);
   return `${WEEKDAY_LONG[weekdayIndex(date)]}, ${MONTH_LONG[mo - 1]} ${d}`;

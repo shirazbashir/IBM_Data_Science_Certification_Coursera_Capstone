@@ -3,7 +3,7 @@ import type { DayWeather, Place, Trip } from './types';
 import { geocodeCity, locate, type GeoPoint } from './lib/geo';
 import { coverImage } from './lib/places';
 import { sunTimes, type SunTimes } from './lib/sun';
-import { datePart, eachDate, isValidTz } from './lib/time';
+import { eachDate, isValidTz } from './lib/time';
 import { isTransport, placeOnDate } from './lib/trips';
 import { weatherForRange } from './lib/weather';
 
@@ -16,15 +16,17 @@ export interface DayInfo {
   sun?: SunTimes;
 }
 
-/** Best time zone for where you are on `date`. */
-function tzOnDate(trip: Trip, date: string, fallback: string): string {
-  const items = trip.items.filter((i) => i.status !== 'cancelled');
-  const hotel = items.find((i) => i.kind === 'hotel' && datePart(i.start) <= date && (!i.end || date <= datePart(i.end)));
-  if (hotel) return hotel.startTz;
-  const arrival = [...items].reverse().find((i) => isTransport(i) && datePart(i.end ?? i.start) <= date);
-  if (arrival) return arrival.endTz ?? arrival.startTz;
-  const any = items.find((i) => datePart(i.start) === date);
-  return any?.startTz ?? fallback;
+/** Time zone of a city, learned from the bookings that go there. */
+function tzForCity(trip: Trip, city: string | undefined): string | undefined {
+  if (!city) return undefined;
+  const c = city.toLowerCase();
+  for (const i of trip.items) {
+    if (i.status === 'cancelled') continue;
+    if (i.location?.city?.toLowerCase() === c) return i.startTz;
+    if (isTransport(i) && i.to?.city?.toLowerCase() === c && i.endTz) return i.endTz;
+    if (isTransport(i) && i.from?.city?.toLowerCase() === c) return i.startTz;
+  }
+  return undefined;
 }
 
 /** Location, weather and sun times for every day of a trip. */
@@ -58,8 +60,9 @@ export function useTripDays(trip: Trip | undefined): { days: Map<string, DayInfo
         dates.map(async (date, i) => {
           const place = places[i];
           const point = points[i];
-          const tzGuess = tzOnDate(trip, date, deviceTz);
-          const tz = isValidTz(tzGuess) ? tzGuess : point?.tz ?? deviceTz;
+          // Sun times must be shown in the time zone of the place they were computed for.
+          const tzGuess = tzForCity(trip, place?.city) ?? point?.tz;
+          const tz = isValidTz(tzGuess) ? tzGuess : deviceTz;
           const info: DayInfo = { date, place, point, tz };
           if (point) {
             info.sun = sunTimes(date, point.lat, point.lon, tz);
